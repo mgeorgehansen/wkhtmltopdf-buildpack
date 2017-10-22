@@ -11,7 +11,8 @@ BIN_PATH="$INSTALL_PATH/bin"
 LIB_PATH="$INSTALL_PATH/lib"
 INCLUDE_PATH="$INSTALL_PATH/include"
 TMP_PATH="$BUILD_DIR/tmp"
-mkdir -p $CACHE_DIR $BIN_PATH $LIB_PATH $INCLUDE_PATH $TMP_PATH
+PROFILE_D_PATH="$BUILD_DIR/.profile.d"
+mkdir -p $CACHE_DIR $BIN_PATH $LIB_PATH $INCLUDE_PATH $TMP_PATH $PROFILE_D_PATH
 
 [ -z "$WKHTMLTOPDF_VERSION" ] && WKHTMLTOPDF_VERSION="0.12.3"
 WKHTMLTOPDF_URL="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz"
@@ -45,7 +46,7 @@ mv $WKHTMLTOPDF_LIBS/* $LIB_PATH/
 mv $WKHTMLTOPDF_INCLUDES/* $INCLUDE_PATH/
 
 echo "-----> Set load path for shared libraries"
-cat <<EOF > "$BUILD_DIR/.profile.d/wkhtmltopdf.sh"
+cat <<EOF > "$PROFILE_D_PATH/wkhtmltopdf.sh"
 export C_INCLUDE_PATH=$INCLUDE_PATH/:\$C_INCLUDE_PATH
 export LD_LIBRARY_PATH=$LIB_PATH/:\$LD_LIBRARY_PATH
 EOF
