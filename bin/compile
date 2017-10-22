@@ -7,21 +7,14 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
 
-INSTALL_PATH="$BUILD_DIR/wxhtmltopdf"
+PREFIX="wxhtmltopdf"
+INSTALL_PATH="$BUILD_DIR/$PREFIX"
 BIN_PATH="$INSTALL_PATH/bin"
 LIB_PATH="$INSTALL_PATH/lib"
 INCLUDE_PATH="$INSTALL_PATH/include"
 TMP_PATH="$BUILD_DIR/tmp"
 PROFILE_D_PATH="$BUILD_DIR/.profile.d"
 mkdir -p $CACHE_DIR $BIN_PATH $LIB_PATH $INCLUDE_PATH $TMP_PATH $PROFILE_D_PATH
-
-EXPORTS=$(cat <<EOF
-export PATH="${PATH:+$PATH:}$BIN_PATH"
-export CPATH="\${CPATH:+\$CPATH:}$INCLUDE_PATH"
-export LIBRARY_PATH="\${LIBRARY_PATH:+\$LIBRARY_PATH:}$LIB_PATH"
-export LD_LIBRARY_PATH="\${LD_LIBRARY_PATH:+\$LD_LIBRARY_PATH:}$LIB_PATH"
-EOF
-)
 
 [ -z "$WKHTMLTOPDF_VERSION" ] && WKHTMLTOPDF_VERSION="0.12.3"
 WKHTMLTOPDF_URL="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz"
@@ -55,9 +48,18 @@ mv $WKHTMLTOPDF_LIBS/* $LIB_PATH/
 mv $WKHTMLTOPDF_INCLUDES/* $INCLUDE_PATH/
 
 echo "-----> Set load path for shared libraries"
-echo "$EXPORTS" > "$PROFILE_D_PATH/wkhtmltopdf.sh"
-# Export env vars for multipack support
-echo "$EXPORTS" > "$BP_DIR/export"
+echo <<EOF > "$PROFILE_D_PATH/wkhtmltopdf.sh"
+export PATH="${PATH:+$PATH:}/app/$PREFIX/bin"
+export LD_LIBRARY_PATH="\${LD_LIBRARY_PATH:+\$LD_LIBRARY_PATH:}/app/$PREFIX/lib"
+EOF
+
+# Export env vars so that multipack compatible buildpacks
+cat <<EOF > "$BP_DIR/export"
+export PATH="${PATH:+$PATH:}$BIN_PATH"
+export CPATH="\${CPATH:+\$CPATH:}$INCLUDE_PATH"
+export LIBRARY_PATH="\${LIBRARY_PATH:+\$LIBRARY_PATH:}$LIB_PATH"
+export LD_LIBRARY_PATH="\${LD_LIBRARY_PATH:+\$LD_LIBRARY_PATH:}$LIB_PATH"
+EOF
 
 echo "-----> Cleaning up"
 rm -rf $WKHTMLTOPDF_PATH
