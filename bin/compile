@@ -7,6 +7,8 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 
 BIN_PATH="$BUILD_DIR/bin"
+LIB_PATH="/usr/lib"
+INCLUDE_PATH="/usr/include"
 TMP_PATH="$BUILD_DIR/tmp"
 mkdir -p $CACHE_DIR $BIN_PATH $TMP_PATH
 
@@ -15,6 +17,8 @@ WKHTMLTOPDF_URL="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${
 WKHTMLTOPDF_TAR="$CACHE_DIR/wkhtmltox.tar.xz"
 WKHTMLTOPDF_PATH="$TMP_PATH/wkhtmltox"
 WKHTMLTOPDF_BINARIES="$WKHTMLTOPDF_PATH/bin"
+WKHTMLTOPDF_LIBS="$WKHTMLTOPDF_PATH/lib"
+WKHTMLTOPDF_INCLUDES="$WKHTMLTOPDF_PATH/include"
 
 BIN_DIR=$(cd $(dirname $0); pwd)
 FONTS_DIR=$(cd "$BIN_DIR/../fonts"; pwd)
@@ -34,6 +38,13 @@ chmod +x $WKHTMLTOPDF_BINARIES/*
 
 echo "-----> Moving binaries to the right place"
 mv $WKHTMLTOPDF_BINARIES/* $BIN_PATH/
+
+echo "-----> Moving shared libraries to right place"
+mv $WKHTMLTOPDF_LIBS/* $LIB_PATH/
+mv $WKHTMLTOPDF_INCLUDES/* $INCLUDE_PATH/
+
+echo "-----> Regenerating LD cache"
+ldconfig
 
 echo "-----> Cleaning up"
 rm -rf $WKHTMLTOPDF_PATH
