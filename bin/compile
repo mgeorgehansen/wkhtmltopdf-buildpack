@@ -49,13 +49,13 @@ mv $WKHTMLTOPDF_INCLUDES/* $INCLUDE_PATH/
 
 echo "-----> Set load path for shared libraries"
 echo <<EOF > "$PROFILE_D_PATH/wkhtmltopdf.sh"
-export PATH="${PATH:+$PATH:}/app/$PREFIX/bin"
+export PATH="\${PATH:+\$PATH:}/app/$PREFIX/bin"
 export LD_LIBRARY_PATH="\${LD_LIBRARY_PATH:+\$LD_LIBRARY_PATH:}/app/$PREFIX/lib"
 EOF
 
 # Export env vars so that multipack compatible buildpacks
 cat <<EOF > "$BP_DIR/export"
-export PATH="${PATH:+$PATH:}$BIN_PATH"
+export PATH="\${PATH:+\$PATH:}$BIN_PATH"
 export CPATH="\${CPATH:+\$CPATH:}$INCLUDE_PATH"
 export LIBRARY_PATH="\${LIBRARY_PATH:+\$LIBRARY_PATH:}$LIB_PATH"
 export LD_LIBRARY_PATH="\${LD_LIBRARY_PATH:+\$LD_LIBRARY_PATH:}$LIB_PATH"
