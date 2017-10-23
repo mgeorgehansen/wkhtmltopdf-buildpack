@@ -48,7 +48,7 @@ mv $WKHTMLTOPDF_LIBS/* $LIB_PATH/
 mv $WKHTMLTOPDF_INCLUDES/* $INCLUDE_PATH/
 
 echo "-----> Set load path for shared libraries"
-echo <<EOF > "$PROFILE_D_PATH/wkhtmltopdf.sh"
+cat <<EOF > "$PROFILE_D_PATH/wkhtmltopdf.sh"
 export PATH="\${PATH:+\$PATH:}/app/$PREFIX/bin"
 export LD_LIBRARY_PATH="\${LD_LIBRARY_PATH:+\$LD_LIBRARY_PATH:}/app/$PREFIX/lib"
 EOF
